@@ -1,3 +1,5 @@
+import 'package:estados/models/usuario.dart';
+import 'package:estados/services/usuario_service.dart';
 import 'package:flutter/material.dart';
 
 class Pagina1Page extends StatelessWidget {
@@ -5,19 +7,28 @@ class Pagina1Page extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pagina 1'),
+        title: const Text('Pagina 1'),
       ),
-      body: InformacionUsuario(),
+      body: StreamBuilder(
+        stream: usuarioService.usuarioStream,
+        builder: (BuildContext context, AsyncSnapshot<Usuario> snapshot) {
+          return snapshot.hasData
+              ? InformacionUsuario(usuario: snapshot.data)
+              : const Center(child: Text('No hay informacion del usuario'));
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.accessibility_new),
+          child: const Icon(Icons.accessibility_new),
           onPressed: () => Navigator.pushNamed(context, 'pagina2')),
     );
   }
 }
 
 class InformacionUsuario extends StatelessWidget {
+  final Usuario? usuario;
+
   const InformacionUsuario({
-    super.key,
+    required this.usuario,
   });
 
   @override
@@ -25,31 +36,31 @@ class InformacionUsuario extends StatelessWidget {
     return Container(
       height: double.infinity,
       width: double.infinity,
-      padding: EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'General',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
-          ListTile(title: Text('Nombre: ')),
-          ListTile(title: Text('Edad: ')),
-          Text(
+          const Divider(),
+          ListTile(title: Text('Nombre: ${usuario?.nombre}')),
+          ListTile(title: Text('Edad: ${usuario?.edad}')),
+          const Text(
             'Profesiones',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
-          ListTile(title: Text('Profesion 1: ')),
-          ListTile(title: Text('Profesion 1: ')),
-          ListTile(title: Text('Profesion 1: ')),
+          const Divider(),
+          ListTile(title: Text('Profesion 1: ${usuario?.profesiones[0]}')),
+          ListTile(title: Text('Profesion 1: ${usuario?.profesiones[0]}')),
+          ListTile(title: Text('Profesion 1: ${usuario?.profesiones[0]}')),
         ],
       ),
     );
